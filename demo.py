@@ -29,9 +29,20 @@ transforms.Resize((32,256)), #(32,384)
 transforms.ToTensor(),
 #transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
 #transforms.Normalize((0.5, ), (0.5, ))
-transforms.RandomApply([
-    transformsv2.ColorJitter(brightness=(0.1, 1.0), hue=(-0.5,0.5), contrast=(0.1, 1.0), saturation=(0.1, 1.0))
-                             ],0.5)
+#transformsv2.RandAugment()
+transformsv2.RandomApply([
+transformsv2.RandomVerticalFlip(p=0.5),
+transformsv2.RandomHorizontalFlip(p=0.5),
+transformsv2.ColorJitter(brightness=(0.1, 1.0), hue=(-0.5,0.5), contrast=(0.1, 1.0), saturation=(0.1, 1.0)),
+transformsv2.TrivialAugmentWide(),
+transformsv2.AutoAugment(transformsv2.AutoAugmentPolicy.CIFAR10),
+transformsv2.RandomPhotometricDistort(),
+transformsv2.RandomChoice([transforms.Compose([
+    transformsv2.RandomRotation(degrees=(-30, 30), expand=True),
+    transforms.Resize((32,256), antialias=False) ]), 
+    transformsv2.RandomRotation(degrees=(-30, 30), expand=False)
+                           ])
+    ],0.8)
 ])
 
 
